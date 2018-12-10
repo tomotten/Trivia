@@ -49,7 +49,7 @@ public class CategoryRequest implements Response.Listener<JSONObject>, Response.
     @Override
     public void onResponse(JSONObject response) {
         Map<String, Integer> categories = new HashMap<String, Integer>();
-        categories.put("Random", 0);
+        categories.put("All categories", 0);
         try {
             JSONArray responseArray = response.getJSONArray("trivia_categories");
 
