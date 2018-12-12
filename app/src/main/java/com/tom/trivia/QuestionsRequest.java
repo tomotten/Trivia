@@ -61,6 +61,12 @@ public class QuestionsRequest implements Response.Listener<JSONObject>, Response
         ArrayList<Question> question_list = new ArrayList<Question>();
 
         try {
+            // check response code from api, = 1 if something went wrong
+            int responseInt = response.getInt("response_code");
+            if (responseInt == 1) {
+                activity.gotQuestionError("Not enough questions found with these restrictions!");
+            }
+
             JSONArray responseArray = response.getJSONArray("results");
 
             // add all results to Hashmap
@@ -73,7 +79,7 @@ public class QuestionsRequest implements Response.Listener<JSONObject>, Response
 
                 // fill in all quotes and clean question from other symbols
                 String question_string = trivia_question.getString("question").replaceAll("&quot;", "'");
-                q.setQuestion(question_string.replaceAll("&#[0-9]+;", ""));
+                q.setQuestion(question_string.replaceAll("&#*[a-zA-Z0-9]+;", ""));
 
                 q.setCorrectAnswer(trivia_question.getString("correct_answer"));
                 JSONArray incorrect_answers = trivia_question.getJSONArray("incorrect_answers");

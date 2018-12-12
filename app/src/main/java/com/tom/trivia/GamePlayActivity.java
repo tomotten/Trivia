@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GamePlayActivity extends AppCompatActivity implements QuestionsRequest.Callback {
     private int question_number;
@@ -31,12 +33,9 @@ public class GamePlayActivity extends AppCompatActivity implements QuestionsRequ
         this.question_number = intent.getIntExtra("question_number", 0);
         this.score = intent.getIntExtra("score", 0);
 
-//        TextView q_num = findViewById(R.id.questionNumberView);
-//        setTitle("Trivia - Question "+ Integer.toString(question_number+1) + ":");
-
         // answered all questions, direct to MenuActivity
         if (question_number == max_questions) {
-            Intent intent1 = new Intent(this, MenuActivity.class);
+            Intent intent1 = new Intent(this, GameFinishedActivity.class);
             intent1.putExtra("score", score);
             startActivity(intent1);
         }
@@ -68,8 +67,8 @@ public class GamePlayActivity extends AppCompatActivity implements QuestionsRequ
 
         // if user selected correct answer, add to score
         if (selectedAnswer.contentEquals(currentQuestion.getCorrectAnswer())) {
-            this.score += 1;
-            Log.d("DAT IS GOED!!!! ----->", Integer.toString(score));
+            this.score += computePointsForQuestion(currentQuestion.getDifficulty(), currentQuestion.getType());
+//            Log.d("DAT IS GOED!!!! ----->", Integer.toString(score));
         }
         intent1.putExtra("score", score);
         startActivity(intent1);
@@ -107,7 +106,9 @@ public class GamePlayActivity extends AppCompatActivity implements QuestionsRequ
         // set question
         TextView questionTitle = findViewById(R.id.questionView);
         questionTitle.setText(question.getQuestion());
-//        setTitle("Trivia: "+question.getCategory());
+
+        TextView difficulty = findViewById(R.id.difficultyView);
+        difficulty.setText("Difficulty : "+question.getDifficulty());
         TextView cat_view = findViewById(R.id.categoryView);
         cat_view.setText("Category: "+ question.getCategory());
         setTitle("Trivia - Question "+ Integer.toString(question_number+1) + ":");
@@ -141,6 +142,19 @@ public class GamePlayActivity extends AppCompatActivity implements QuestionsRequ
             button1.setText("True");
             button2.setText("False");
         }
+
+    }
+
+    private int computePointsForQuestion(String difficulty, String type) {
+        Map<String, Integer> map_diffuculty = new HashMap<String, Integer>();
+        map_diffuculty.put("easy", 3);
+        map_diffuculty.put("medium", 4);
+        map_diffuculty.put("hard", 5);
+
+        Map<String, Integer> map_type = new HashMap<String, Integer>();
+        map_type.put("boolean", 2);
+        map_type.put("multiple", 3);
+        return (map_diffuculty.get(difficulty) * map_type.get(type));
 
     }
 }

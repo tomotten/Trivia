@@ -21,6 +21,7 @@ public class MenuActivity extends AppCompatActivity implements CategoryRequest.C
         setContentView(R.layout.activity_menu);
         CategoryRequest cr = new CategoryRequest(this);
         cr.getCategories(this);
+        setTitle("Trivia : Menu");
     }
 
     @Override
@@ -90,5 +91,10 @@ public class MenuActivity extends AppCompatActivity implements CategoryRequest.C
     // act as if homeButton is pressed
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    public void onShowScoreClick(View view) {
+        Intent intent = new Intent(this, HighScoreActivity.class);
+        startActivity(intent);
     }
 }
